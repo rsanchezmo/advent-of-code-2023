@@ -95,10 +95,110 @@ So, the lowest location number in this example is 35.
 
 What is the lowest location number that corresponds to any of the initial seed numbers?
 
+--- Part Two ---
+Everyone will starve if you only plant such a small number of seeds. Re-reading the almanac, it looks like the seeds: line actually describes ranges of seed numbers.
+
+The values on the initial seeds: line come in pairs. Within each pair, the first value is the start of the range and the second value is the length of the range. So, in the first line of the example above:
+
+seeds: 79 14 55 13
+This line describes two ranges of seed numbers to be planted in the garden. The first range starts with seed number 79 and contains 14 values: 79, 80, ..., 91, 92. The second range starts with seed number 55 and contains 13 values: 55, 56, ..., 66, 67.
+
+Now, rather than considering four seed numbers, you need to consider a total of 27 seed numbers.
+
+In the above example, the lowest location number can be obtained from seed number 82, which corresponds to soil 84, fertilizer 84, water 84, light 77, temperature 45, humidity 46, and location 46. So, the lowest location number is 46.
+
+Consider all of the initial seed numbers listed in the ranges on the first line of the almanac. What is the lowest location number that corresponds to any of the initial seed numbers?
+
 """
 
+import re
+
+
 def main():
-    ...
+    
+    with open('./december_5/input.txt', 'r') as f:
+
+        maps = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+            7: []
+        }
+
+        current_map = None
+        for line in f:
+            line = line.strip()
+            if "seeds" in line:
+                maps[0] = list(map(int, re.findall(r'\d+', line)))
+            elif "seed-to-soil map:" in line:
+                current_map = 1
+            elif "soil-to-fertilizer map:" in line:
+                current_map = 2
+            elif "fertilizer-to-water map:" in line:
+                current_map = 3
+            elif "water-to-light map:" in line:
+                current_map = 4
+            elif "light-to-temperature map:" in line:
+                current_map = 5
+            elif "temperature-to-humidity map:" in line:
+                current_map = 6
+            elif "humidity-to-location map:" in line:
+                current_map = 7
+            else:
+                if current_map:
+                    nums = list(map(int, line.split()))
+                    maps[current_map].append(nums) if len(nums) > 0 else None
+
+    def find_location_recursive(current_n, next_key):
+        # first check the range or return the same n
+        for mapping in maps[next_key]:
+            destination = mapping[0]
+            source = mapping[1]
+            range_ = mapping[2]
+
+            if source <= current_n < source + range_:
+                current_n = destination + (current_n - source)
+                break
+
+        
+        # update the next key
+        next_key += 1
+
+        # if we have the location return the recursivity
+        if next_key == 8:
+            return current_n
+        
+        return find_location_recursive(current_n, next_key)
+
+    """ PART 1 """
+    locations = []
+    for seed in maps[0]:
+        location = find_location_recursive(seed, 1)
+        locations.append(location)
+
+    print(f"The lowest location is: {min(locations)}")
+
+    """ PART 2 """
+    # this version is really inneficient
+    locations = []
+    counter = 0
+    while counter < len(maps[0]):
+        print(f"{counter}/{len(maps[0])}")
+        source = maps[0][counter]
+        range_ = maps[0][counter + 1]
+        for seed in range(source, source+range_):
+            location = find_location_recursive(seed, 1)
+            locations.append(location)
+        counter += 2
+    
+    print(f"The lowest location is: {min(locations)}")
+
+
+
 
 
 if __name__ == '__main__':
