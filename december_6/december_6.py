@@ -42,5 +42,66 @@ To see how much margin of error you have, determine the number of ways you can b
 
 Determine the number of ways you could beat the record in each race. What do you get if you multiply these numbers together?
 
+--- Part Two ---
+As the race is about to start, you realize the piece of paper with race times and record distances you got earlier actually just has very bad kerning. There's really only one race - ignore the spaces between the numbers on each line.
+
+So, the example from before:
+
+Time:      7  15   30
+Distance:  9  40  200
+...now instead means this:
+
+Time:      71530
+Distance:  940200
+Now, you have to figure out how many ways there are to win this single race. In this example, the race lasts for 71530 milliseconds and the record distance you need to beat is 940200 millimeters. You could hold the button anywhere from 14 to 71516 milliseconds and beat the record, a total of 71503 ways!
+
+How many ways can you beat the record in this one much longer race?
 
 """
+import re
+import math
+
+def main():
+    with open('./december_6/input.txt', 'r') as f:
+        lines = f.readlines()
+
+    times = list(map(int, re.findall(r'\d+', lines[0])))
+    distances = list(map(int, re.findall(r'\d+', lines[1])))
+
+    def get_distance(time_held, max_time):
+        return time_held * (max_time - time_held)
+
+
+    """ Part 1 """
+    product = 1
+    for max_time, max_distance in zip(times, distances):
+        counter = 0
+        for time_held in range(max_time//2 + 1):
+            if get_distance(time_held, max_time) > max_distance:
+                if time_held == (max_time//2) and max_time % 2 == 0:
+                    counter += 1
+                else:
+                    counter += 2
+        product *= counter if counter > 0 else 1
+
+    print(f"Product: {product}")
+
+    """ Part 2 """
+    with open('./december_6/input.txt', 'r') as f:
+        lines = f.readlines()
+
+    times = int(lines[0].split('Time: ')[1].replace(" ", ""))
+    distances = int(lines[1].split('Distance: ')[1].replace(" ", ""))
+
+    counter = 0
+    for time_held in range(times//2 + 1):
+        if get_distance(time_held, times) > distances:
+            if time_held == (times//2) and times % 2 == 0:
+                counter += 1
+            else:
+                counter += 2
+
+    print(f"Number of ways to beat the race: {counter}")
+
+if __name__ == "__main__":
+    main()
