@@ -9,7 +9,8 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 5: ```december_5.py ``` ✔️
     - Should try another approach to part 2 as it is extremely slow
 - Day 6: ```december_6.py ``` ✔️
-- Day 7: ```december_7.py ``` 
+- Day 7: ```december_7.py ``` ✔️
+- Day 8: ```december_8.py ``` 
 
 ## How to run
 Just call the python file from the day folder you want to run. For example:
