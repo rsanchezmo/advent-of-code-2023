@@ -7,7 +7,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 3: ```december_3.py ``` ✔️
 - Day 4: ```december_4.py ``` ✔️
 - Day 5: ```december_5.py ``` ✔️
-    - Should try another approach to part 2 as it is very slow
+    - Should try another approach to part 2 as it is extremely slow
 - Day 6: ```december_6.py ``` ✔️
 - Day 7: ```december_7.py ``` 
 
