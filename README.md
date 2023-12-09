@@ -20,3 +20,9 @@ Just call the python file from the day folder you want to run. For example:
 ```python
 python3 december_1/december_1.py
 ```
+
+## Contributors
+Rodrigo Sánchez Molina
+- Email: rsanchezm98@gmail.com
+- Linkedin: [rsanchezm98](https://www.linkedin.com/in/rsanchezm98/)
+- Github: [rsanchezmo](https://github.com/rsanchezmo)
