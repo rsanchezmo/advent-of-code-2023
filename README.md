@@ -15,7 +15,8 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 10: ```december_10.py ``` 
     - Part 1: ✔️
     - Part 2: ❌
-- Day 11: ```december_11.py ```  
+- Day 11: ```december_11.py ``` ✔️
+- Day 12: ```december_12.py ```   
 
 ## How to run
 Just call the python file from the day folder you want to run. For example:
