@@ -13,6 +13,9 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 8: ```december_8.py ```  ✔️
 - Day 9: ```december_9.py ```  ✔️
 - Day 10: ```december_10.py ``` 
+    - Part 1: ✔️
+    - Part 2: ❌
+- Day 11: ```december_11.py ```  
 
 ## How to run
 Just call the python file from the day folder you want to run. For example:
@@ -20,6 +23,9 @@ Just call the python file from the day folder you want to run. For example:
 ```python
 python3 december_1/december_1.py
 ```
+
+## Future work
+Complete the days I haven't done yet and improve the days that are inneficient.
 
 ## Contributors
 Rodrigo Sánchez Molina
