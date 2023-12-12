@@ -228,14 +228,14 @@ def main():
     lines = [line.strip() for line in lines]
 
     """ Part 1 """
-    start = None
+    start_position = None
     for i, line in enumerate(lines):
         if "S" in line:
-            start = (i, line.index("S"), 0)  # (row, col, distance)
+            start_position = (i, line.index("S"), 0)  # (row, col, distance)
             break
 
     queue = deque()
-    queue.append(start)
+    queue.append(start_position)
     map_seen = np.zeros((len(lines), len(lines[0])), dtype=int) - 1
 
     while queue:
@@ -252,26 +252,76 @@ def main():
     print(f"Part 1: {np.max(map_seen)}")
 
     """ Part 2 """
-    pprint(map_seen)
+    # we need to compute the path of the loop
+    # we can backprop from the max distance point
+    max_distance_orig = np.max(map_seen)
+    max_distance_pos = np.where(map_seen == max_distance_orig)
+    max_distance_pos = (max_distance_pos[0][0], max_distance_pos[1][0], 0)
 
-    # modify map seen
-    map_seen[map_seen >= 0] = 1
-    map_seen[map_seen == -1] = 0
+    loop_left = []
+    loop_left.append(max_distance_pos)
+    loop_right = []
+    loop_right.append(max_distance_pos)
 
-    pprint(map_seen)
+    # we need to find the first neighbour that has the max_distance - 1 [2 ways to go]
+    left = True
+    for direction in ["N", "S", "E", "W"]:
+        if not valid_move(max_distance_pos, direction, lines):
+            continue
+        new_pos = move(max_distance_pos, direction)
+        if map_seen[new_pos[0]][new_pos[1]] == max_distance_orig - 1:
+            if left:
+                loop_left.append(new_pos)
+                left = False
+            else:
+                loop_right.append(new_pos)
+            
+    # left side till 0
+    max_distance = max_distance_orig - 1
+    max_distance_pos = loop_left[-1]
+    while max_distance >= 0:
+        max_distance -= 1
+        # get the neighbour that has the max_distance - 1
+        for direction in ["N", "S", "E", "W"]:
+            if not valid_move(max_distance_pos, direction, lines):
+                continue
+            new_pos = move(max_distance_pos, direction)
+            if map_seen[new_pos[0]][new_pos[1]] == max_distance:
+                loop_left.append(new_pos)
+                max_distance_pos = new_pos
+                break
 
-    # Inverting the array so that borders are 0 and the area to fill is 1
-    inverted_map = 1 - map_seen
+    loop_left.append(start_position)
 
-    # Filling the holes
-    filled_map = binary_fill_holes(inverted_map, origin=(2,2))
+    # right side till 0
+    max_distance = max_distance_orig - 1
+    max_distance_pos = loop_right[-1]
+    while max_distance >= 0:
+        max_distance -= 1
+        # get the neighbour that has the max_distance - 1
+        for direction in ["N", "S", "E", "W"]:
+            if not valid_move(max_distance_pos, direction, lines):
+                continue
+            new_pos = move(max_distance_pos, direction)
+            if map_seen[new_pos[0]][new_pos[1]] == max_distance:
+                loop_right.append(new_pos)
+                max_distance_pos = new_pos
+                break
 
-    pprint(filled_map)
+    # now reverse the right side and append it to the left side
+    loop_right.reverse()
+    loop = loop_left + loop_right
 
-    # Counting the number of filled positions
-    filled_count = np.sum(filled_map)
+    def compute_area(points):
+        return sum([row1 * col2 - row2 * col1 for (row1, col1, _), (row2, col2, _) in zip(points, points[1:])]) / 2.
 
-    print(f"Part 2: {filled_count}")
+    # I have seen that can use the shoelace formula to calculate the area of a polygon as we now the coordinates of the vertices
+    area = compute_area(loop)
+
+    # later can use the picks theorem to find the number of points inside the polygon given the area
+    interior_points = int(abs(area) - 0.5 * (len(loop) - 1) + 1)
+
+    print(f"Part 2: {interior_points}")
 
 if __name__ == "__main__":
     main()

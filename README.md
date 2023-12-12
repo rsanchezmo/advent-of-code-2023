@@ -1,7 +1,7 @@
 # Advent of Code 2023
 This repo contains my solutions to [Advent of Code 2023](https://adventofcode.com/) in Python.  
 
-## Days completed [22 🌟]
+## Days completed [23 🌟]
 - Day 1: ```december_1.py```  ✔️
 - Day 2: ```december_2.py```  ✔️
 - Day 3: ```december_3.py```  ✔️
@@ -13,9 +13,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 7: ```december_7.py```  ✔️
 - Day 8: ```december_8.py```  ✔️
 - Day 9: ```december_9.py```  ✔️
-- Day 10: ```december_10.py``` 
-    - Part 1: ✔️
-    - Part 2: ❌
+- Day 10: ```december_10.py``` ✔️
 - Day 11: ```december_11.py``` ✔️
 - Day 12: ```december_12.py``` ✔️
     - I would say this was the hardest day so far   
