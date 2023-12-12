@@ -190,8 +190,6 @@ Figure out whether you have time to search for the nest by calculating the area 
 
 from collections import deque
 import numpy as np
-from pprint import pprint
-from scipy.ndimage import binary_fill_holes
 
 def valid_move(pos, direction, lines):
     if direction == "N" and pos[0] - 1 >= 0:
@@ -212,6 +210,22 @@ def valid_move(pos, direction, lines):
             return True
     return False
 
+def get_next(pos, lines, map_seen, max_distance):
+    if valid_move(pos, "N", lines):
+        if map_seen[pos[0] - 1][pos[1]] == max_distance:
+            return (pos[0] - 1, pos[1], 0)
+    if valid_move(pos, "S", lines):
+        if map_seen[pos[0] + 1][pos[1]] == max_distance:
+            return (pos[0] + 1, pos[1], 0)
+    if valid_move(pos, "E", lines):
+        if map_seen[pos[0]][pos[1] + 1] == max_distance:
+            return (pos[0], pos[1] + 1, 0)
+    if valid_move(pos, "W", lines):
+        if map_seen[pos[0]][pos[1] - 1] == max_distance:
+            return (pos[0], pos[1] - 1, 0)
+        
+    return None
+
 def move(pos, direction):
     if direction == "N":
         return (pos[0] - 1, pos[1], pos[2] + 1)
@@ -223,7 +237,7 @@ def move(pos, direction):
         return (pos[0], pos[1] - 1, pos[2] + 1)
 
 def main():
-    with open("./december_10/test.txt") as f:
+    with open("./december_10/input.txt") as f:
         lines = f.readlines()
     lines = [line.strip() for line in lines]
 
@@ -237,6 +251,7 @@ def main():
     queue = deque()
     queue.append(start_position)
     map_seen = np.zeros((len(lines), len(lines[0])), dtype=int) - 1
+    transition_map = {}
 
     while queue:
         start = queue.popleft()
@@ -245,6 +260,7 @@ def main():
                 continue
             new_pos = move(start, direction)
             if map_seen[new_pos[0]][new_pos[1]] == -1:
+                transition_map[new_pos[0:2]] = start[0:2]
                 queue.append(new_pos)
         map_seen[start[0]][start[1]] = start[2]
         
@@ -259,9 +275,9 @@ def main():
     max_distance_pos = (max_distance_pos[0][0], max_distance_pos[1][0], 0)
 
     loop_left = []
-    loop_left.append(max_distance_pos)
+    loop_left.append(max_distance_pos[0:2])
     loop_right = []
-    loop_right.append(max_distance_pos)
+    loop_right.append(max_distance_pos[0:2])
 
     # we need to find the first neighbour that has the max_distance - 1 [2 ways to go]
     left = True
@@ -271,49 +287,30 @@ def main():
         new_pos = move(max_distance_pos, direction)
         if map_seen[new_pos[0]][new_pos[1]] == max_distance_orig - 1:
             if left:
-                loop_left.append(new_pos)
+                loop_left.append(new_pos[0:2])
                 left = False
             else:
-                loop_right.append(new_pos)
-            
-    # left side till 0
-    max_distance = max_distance_orig - 1
-    max_distance_pos = loop_left[-1]
-    while max_distance >= 0:
-        max_distance -= 1
-        # get the neighbour that has the max_distance - 1
-        for direction in ["N", "S", "E", "W"]:
-            if not valid_move(max_distance_pos, direction, lines):
-                continue
-            new_pos = move(max_distance_pos, direction)
-            if map_seen[new_pos[0]][new_pos[1]] == max_distance:
-                loop_left.append(new_pos)
-                max_distance_pos = new_pos
-                break
+                loop_right.append(new_pos[0:2])
+    
+    # we need to backprop from the max_distance_orig - 1 using the transition_map
+    cur_pos = transition_map[loop_left[-1]]
+    while True:
+        loop_left.append(cur_pos)
+        cur_pos = transition_map[cur_pos]
+        if cur_pos == start_position[0:2]:
+            break
 
-    loop_left.append(start_position)
+    cur_pos = transition_map[loop_right[-1]]
+    while True:
+        loop_right.append(cur_pos)
+        cur_pos = transition_map[cur_pos]
+        if cur_pos == start_position[0:2]:
+            break
 
-    # right side till 0
-    max_distance = max_distance_orig - 1
-    max_distance_pos = loop_right[-1]
-    while max_distance >= 0:
-        max_distance -= 1
-        # get the neighbour that has the max_distance - 1
-        for direction in ["N", "S", "E", "W"]:
-            if not valid_move(max_distance_pos, direction, lines):
-                continue
-            new_pos = move(max_distance_pos, direction)
-            if map_seen[new_pos[0]][new_pos[1]] == max_distance:
-                loop_right.append(new_pos)
-                max_distance_pos = new_pos
-                break
-
-    # now reverse the right side and append it to the left side
-    loop_right.reverse()
-    loop = loop_left + loop_right
+    loop = loop_left + [start_position[0:2]] + loop_right[::-1]
 
     def compute_area(points):
-        return sum([row1 * col2 - row2 * col1 for (row1, col1, _), (row2, col2, _) in zip(points, points[1:])]) / 2.
+        return sum([row1 * col2 - row2 * col1 for (row1, col1), (row2, col2) in zip(points[1:], points)]) / 2.
 
     # I have seen that can use the shoelace formula to calculate the area of a polygon as we now the coordinates of the vertices
     area = compute_area(loop)
