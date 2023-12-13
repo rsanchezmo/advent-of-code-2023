@@ -1,7 +1,7 @@
 # Advent of Code 2023
 This repo contains my solutions to [Advent of Code 2023](https://adventofcode.com/) in Python.  
 
-## Days completed [23 🌟]
+## Days completed [24 🌟]
 - Day 1: ```december_1.py```  ✔️
 - Day 2: ```december_2.py```  ✔️
 - Day 3: ```december_3.py```  ✔️
@@ -17,6 +17,9 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 11: ```december_11.py``` ✔️
 - Day 12: ```december_12.py``` ✔️
     - I would say this was the hardest day so far   
+- Day 13: ```december_13.py``` 
+    - Part 1: ✔️
+    - Part 2: ❌
 
 ## How to run
 Just call the python file from the day folder you want to run. For example:
