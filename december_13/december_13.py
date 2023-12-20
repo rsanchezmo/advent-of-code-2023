@@ -111,6 +111,8 @@ In each pattern, fix the smudge and find the different line of reflection. What 
 """
 
 import math
+import copy
+
 
 def search_horizontal(pattern):
     """ search for a horizontal line of reflection """
@@ -147,6 +149,42 @@ def search_horizontal(pattern):
 
     return 0
 
+def compare_lists(list1, list2):
+    differences = []
+    for i in range(len(list1)):
+        if abs(list1[i] - list2[i]) > 0:
+            differences.append((i))
+    return differences
+
+def fix_smug_horizontal(pattern):
+    """ fix the smug in the pattern """
+    # search for a similar horizontal line with a difference of 1 [smug: 1 OR 0]
+    new_pattern = copy.deepcopy(pattern)
+    n_smugs = 0
+    smug_candidates = []
+    for i in range(len(pattern)-1):
+        line = list(new_pattern[i]) if not isinstance(pattern[i], list) else new_pattern[i]
+        new_pattern[i] = line
+        for j in range(i+1, len(pattern)):
+            comparison = compare_lists(pattern[i], pattern[j])
+            if len(comparison) == 1:  # meaning an smug
+                line[comparison[0]] = pattern[j][comparison[0]]  # should care about being 1 or 0?
+                new_pattern[i] = line
+                # print(new_pattern)
+                n_smugs += 1
+                smug_candidates.append(new_pattern)
+                new_pattern = copy.deepcopy(pattern)
+                break
+
+    return smug_candidates
+
+
+
+def print_pattern(pattern, mode="HORIZONTAL"):
+    print(f"Mode: {mode}")
+    for line in pattern:
+        print(line)
+
 
 
 def main():
@@ -181,6 +219,31 @@ def main():
     
     
     """ part 2 """  
+    summarize = 0
+    for i, pattern in enumerate(patterns):
+        print(f"Pattern #: {i}")
+        print_pattern(pattern, mode="ORIGINAL")
+        candidates = fix_smug_horizontal(pattern)
+        horizontal = 0
+        for candidate in candidates:
+            horizontal = search_horizontal(candidate)
+            if horizontal > 0:
+                print("FOUND PATTERN")
+                print_pattern(candidate, mode='HORIZONTAL')
+                
+        vertical = 0
+        pattern_ver = list(zip(*pattern))
+        candidates = fix_smug_horizontal(pattern_ver)
+        for candidate in candidates:
+            vertical = search_horizontal(candidate)
+            if vertical > 0:
+                print("FOUND PATTERN")
+                print_pattern(candidate, mode='VERTICAL')
+
+        print(f"H: {horizontal} - V: {vertical}")
+        summarize += horizontal*100 + vertical
+
+    print(f"Part 2: {summarize}")
     
 
 if __name__ == "__main__":
