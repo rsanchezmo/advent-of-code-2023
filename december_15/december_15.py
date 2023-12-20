@@ -27,6 +27,9 @@ def main():
 
     print(f"Part 1: {sum_}")
 
+    """ Part 2 """
+    
+
     
 if __name__ == "__main__":
     main()
