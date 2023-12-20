@@ -28,7 +28,54 @@ def main():
     print(f"Part 1: {sum_}")
 
     """ Part 2 """
-    
+    hashmap = {}
+    for component in components:
+        if '=' in component:
+            box, focal_lenght = component.split("=")
+            box_id = hash_function(box)
+            id = box + ' ' + focal_lenght
+
+            print(f"= {id} {box_id}")
+
+            box_components = hashmap.get(box_id, [])
+
+            found = False
+            for i, lens in enumerate(box_components):
+                if box == lens.split(" ")[0]:
+                    box_components[i] = id
+                    hashmap[box_id] = box_components
+                    found = True
+                    break
+            if not found:
+                box_components.append(id)
+                hashmap[box_id] = box_components
+
+        if '-' in component:
+            box = component.split("-")[0]
+            box_id = hash_function(box)
+
+            print(f"- {box} {box_id}")
+
+            box_components = hashmap.get(box_id, [])
+
+            for lens in box_components:
+                if box == lens.split(" ")[0]:
+                    box_components.remove(lens)
+                    hashmap[box_id] = box_components
+                    break
+
+    from pprint import pprint
+    pprint(hashmap)
+
+
+    focusing_power = 0
+    for box_id, box_components in hashmap.items():
+        for i, lens in enumerate(box_components):
+            focal_lenght = int(lens.split(" ")[-1])
+            focusing_power += (box_id + 1) * (i + 1) * focal_lenght
+
+    print(f"Part 2: {focusing_power}")
+
 
     
 if __name__ == "__main__":
