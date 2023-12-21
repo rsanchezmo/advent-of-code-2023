@@ -99,14 +99,100 @@ def main():
                 next_beam_poses.append((x - 1, y, 'W'))
             return
 
-        
-
     while next_beam_poses:
         propagate_beam(next_beam_poses.popleft())
 
     print(f"Part 1: {sum([x.count('#') for x in energized_map])}")
 
     """ Part 2 """
+    energizes = []
+
+    # get initial points from top line
+    for i in range(len(map[0])):
+        next_beam_poses = deque()
+        energized_map = copy.deepcopy(map)
+        propagate_beam.cache_clear()
+
+        if map[0][i] == '/':
+            next_beam_poses.append((i, 0, 'W'))
+        elif map[0][i] == '\\':
+            next_beam_poses.append((i, 0, 'E'))
+        elif map[0][i] == '-':
+            next_beam_poses.append((i, 0, 'E'))
+            next_beam_poses.append((i, 0, 'W'))
+        else:
+            next_beam_poses.append((i, 0, 'S'))
+
+        while len(next_beam_poses) > 0:
+            next_pose = next_beam_poses.popleft()
+            propagate_beam(next_pose)
+
+        energizes.append(sum([x.count('#') for x in energized_map]))
+
+    # get initial points from bottom line
+    for i in range(len(map[-1])):
+        next_beam_poses = deque()
+        energized_map = copy.deepcopy(map)
+        propagate_beam.cache_clear()
+
+        if map[-1][i] == '/':
+            next_beam_poses.append((i, len(map) - 1, 'E'))
+        elif map[-1][i] == '\\':
+            next_beam_poses.append((i, len(map) - 1, 'W'))
+        elif map[-1][i] == '-':
+            next_beam_poses.append((i, len(map) - 1, 'E'))
+            next_beam_poses.append((i, len(map) - 1, 'W'))
+        else:
+            next_beam_poses.append((i, len(map) - 1, 'N'))
+
+        while next_beam_poses:
+            propagate_beam(next_beam_poses.popleft())
+
+        energizes.append(sum([x.count('#') for x in energized_map]))
+
+    # get initial points from left line
+    for i in range(len(map)):
+        next_beam_poses = deque()
+        energized_map = copy.deepcopy(map)
+        propagate_beam.cache_clear()
+
+        if map[i][0] == '/':
+            next_beam_poses.append((0, i, 'N'))
+        elif map[i][0] == '\\':
+            next_beam_poses.append((0, i, 'S'))
+        elif map[i][0] == '|':
+            next_beam_poses.append((0, i, 'N'))
+            next_beam_poses.append((0, i, 'S'))
+        else:
+            next_beam_poses.append((0, i, 'E'))
+
+        while next_beam_poses:
+            propagate_beam(next_beam_poses.popleft())
+
+        energizes.append(sum([x.count('#') for x in energized_map]))
+
+    # get initial points from right line
+    for i in range(len(map)):
+        next_beam_poses = deque()
+        energized_map = copy.deepcopy(map)
+        propagate_beam.cache_clear()
+
+        if map[i][-1] == '/':
+            next_beam_poses.append((len(map[0]) - 1, i, 'S'))
+        elif map[i][-1] == '\\':
+            next_beam_poses.append((len(map[0]) - 1, i, 'N'))
+        elif map[i][-1] == '|':
+            next_beam_poses.append((len(map[0]) - 1, i, 'N'))
+            next_beam_poses.append((len(map[0]) - 1, i, 'S'))
+        else:
+            next_beam_poses.append((len(map[0]) - 1, i, 'W'))
+
+        while next_beam_poses:
+            propagate_beam(next_beam_poses.popleft())
+
+        energizes.append(sum([x.count('#') for x in energized_map]))
+
+    print(f"Part 2: {max(energizes)}")
 
 if __name__ == "__main__":
     main()
