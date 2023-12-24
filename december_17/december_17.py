@@ -129,7 +129,6 @@ def main():
     t_init = time.time()
     heat_loss = a_star(start, goal, max_distance_allowed=10, min_distance_allowed=4)
     print(f"Time: {time.time() - t_init}s")
-    pprint(visited_map)
     print(f"Part 2: Heat loss of {heat_loss}")
 
 if __name__ == '__main__':
