@@ -101,7 +101,7 @@ def main():
         while opened_nodes:
             _, current_node = heapq.heappop(opened_nodes)  # it samples the node with the lowest f value
 
-            if current_node.pose == goal.pose:
+            if current_node.pose == goal.pose and current_node.distance >= min_distance_allowed:
                 total_cost = current_node.g
                 visited_map[current_node.pose[1]][current_node.pose[0]] = '#'
                 return total_cost
