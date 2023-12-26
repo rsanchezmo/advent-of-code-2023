@@ -1,8 +1,10 @@
 from pprint import pprint
 import re
+import copy
+
 
 def main():
-    with open("./december_19/input.txt", 'r') as f:
+    with open("./december_19/test.txt", 'r') as f:
         lines = f.readlines()
 
     workflows = {}
@@ -82,7 +84,67 @@ def main():
     sum_accepted = sum(sum(val.values()) for val in organization['A'])
     sum_rejected = sum(sum(val.values()) for val in organization['R'])
     print(f'Part 1: A {sum_accepted} R {sum_rejected}')
-    
+
+    # Part 2
+    total_combinations = 0
+    next_ = 'in'
+    x_range = [1, 4000]
+    m_range = [1, 4000]
+    a_range = [1, 4000]
+    s_range = [1, 4000]
+    ranges = {'x': x_range, 
+              'm': m_range, 
+              'a': a_range,
+              's': s_range}
+
+    def process_node_tree(next_, ranges):
+        workflow = workflows[next_]
+        for rule in workflow:
+            type_, comparison, value, next_ = rule
+            
+            if type_ is None:
+                if next_.isupper():
+                    if next_ == 'A':
+                        x_combi = ranges['x'][1] - ranges['x'][0]
+                        m_combi = ranges['m'][1] - ranges['m'][0]
+                        a_combi = ranges['a'][1] - ranges['a'][0]
+                        s_combi = ranges['s'][1] - ranges['s'][0]
+                        return x_combi * m_combi * a_combi * s_combi  # we got accepted
+                    else:
+                        return 0 # we got rejected
+                
+                else:
+                    break  # move onto the next workflow, keep ranges as they were
+
+            else:
+                if comparison == '>':
+                    # create two new nodes from upper or lower
+                    ranges_lower = copy.deepcopy(ranges)
+                    ranges_upper = copy.deepcopy(ranges)
+
+                    # modify lower
+
+                    # modify higher
+                    
+
+                    count_lower = process_node_tree(next_, ranges_lower)
+                    count_upper = process_node_tree(next_, ranges_upper)
+
+                    return count_lower + count_upper
+
+                else:
+                    # create two new nodes from upper or lower
+                    ranges_lower = copy.deepcopy(ranges)
+                    ranges_upper = copy.deepcopy(ranges)
+                    
+
+                    count_lower = process_node_tree(next_, ranges_lower)
+                    count_upper = process_node_tree(next_, ranges_upper)
+
+                    return count_lower + count_upper
+
+
+    print(f'Part 2: {process_node_tree(next_, ranges)}')
 
 
 
