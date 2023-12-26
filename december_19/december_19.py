@@ -4,7 +4,7 @@ import copy
 
 
 def main():
-    with open("./december_19/test.txt", 'r') as f:
+    with open("./december_19/input.txt", 'r') as f:
         lines = f.readlines()
 
     workflows = {}
@@ -98,54 +98,80 @@ def main():
               's': s_range}
 
     def process_node_tree(next_, ranges):
+        """ Binary Tree Search """
+
+        if next_.isupper():
+            if next_ == 'A':
+                x_combi = ranges['x'][1] - ranges['x'][0] + 1
+                m_combi = ranges['m'][1] - ranges['m'][0] + 1
+                a_combi = ranges['a'][1] - ranges['a'][0] + 1
+                s_combi = ranges['s'][1] - ranges['s'][0] + 1
+                return x_combi * m_combi * a_combi * s_combi  # we got accepted
+            else:
+                return 0 # we got rejected
+        
         workflow = workflows[next_]
-        for rule in workflow:
+        count = 0
+        for i, rule in enumerate(workflow):
             type_, comparison, value, next_ = rule
-            
+    
             if type_ is None:
                 if next_.isupper():
                     if next_ == 'A':
-                        x_combi = ranges['x'][1] - ranges['x'][0]
-                        m_combi = ranges['m'][1] - ranges['m'][0]
-                        a_combi = ranges['a'][1] - ranges['a'][0]
-                        s_combi = ranges['s'][1] - ranges['s'][0]
-                        return x_combi * m_combi * a_combi * s_combi  # we got accepted
+                        x_combi = ranges['x'][1] - ranges['x'][0] + 1
+                        m_combi = ranges['m'][1] - ranges['m'][0] + 1
+                        a_combi = ranges['a'][1] - ranges['a'][0] + 1
+                        s_combi = ranges['s'][1] - ranges['s'][0] + 1
+                        return x_combi * m_combi * a_combi * s_combi + count  # we got accepted
                     else:
-                        return 0 # we got rejected
-                
+                        return count # we got rejected, return the branches that were closed before
                 else:
-                    break  # move onto the next workflow, keep ranges as they were
+                    count += process_node_tree(next_, ranges)
+                    return count  # we are moving forced to the next_ workflow
+            
+            if comparison == '>':
+                # create two new nodes from upper or lower
+                ranges_lower = copy.deepcopy(ranges)
+                ranges_upper = copy.deepcopy(ranges)
+
+                # modify lower
+                ranges_lower[type_][1] = value if value < ranges_lower[type_][1] else ranges_lower[type_][1]
+                # modify higher
+                ranges_upper[type_][0] = value + 1 if value + 1 > ranges_upper[type_][0] else ranges_upper[type_][0]
+                
+                if ranges_upper[type_][0] <= ranges_upper[type_][1]:
+                    count += process_node_tree(next_, ranges_upper)  # if matches the > rule, move onto the next_ workflow
+                
+                if ranges_lower[type_][0] > ranges_lower[type_][1]:
+                    # this way is not possible so we can stop
+                    return count  # return count as this value is from the other branch
+
+                ranges = ranges_lower # if upper should move onto the next rule
 
             else:
-                if comparison == '>':
-                    # create two new nodes from upper or lower
-                    ranges_lower = copy.deepcopy(ranges)
-                    ranges_upper = copy.deepcopy(ranges)
+                # create two new nodes from upper or lower
+                ranges_lower = copy.deepcopy(ranges)
+                ranges_upper = copy.deepcopy(ranges)
 
-                    # modify lower
+                # modify lower
+                ranges_lower[type_][1] = value - 1 if value - 1 < ranges_lower[type_][1] else ranges_lower[type_][1]
+                # modify higher
+                ranges_upper[type_][0] = value if value > ranges_upper[type_][0] else ranges_upper[type_][0]
 
-                    # modify higher
-                    
+                if ranges_lower[type_][0] <= ranges_lower[type_][1]:
+                    count += process_node_tree(next_, ranges_lower)  # if lower should move onto the next_ workflow
+                
+                if ranges_upper[type_][0] > ranges_upper[type_][1]:
+                    # this way is not possible so we can stop
+                    return count
+                
+                ranges = ranges_upper # if lower should move onto the next rule
 
-                    count_lower = process_node_tree(next_, ranges_lower)
-                    count_upper = process_node_tree(next_, ranges_upper)
+        return count
 
-                    return count_lower + count_upper
-
-                else:
-                    # create two new nodes from upper or lower
-                    ranges_lower = copy.deepcopy(ranges)
-                    ranges_upper = copy.deepcopy(ranges)
-                    
-
-                    count_lower = process_node_tree(next_, ranges_lower)
-                    count_upper = process_node_tree(next_, ranges_upper)
-
-                    return count_lower + count_upper
-
-
-    print(f'Part 2: {process_node_tree(next_, ranges)}')
-
+    solution = process_node_tree(next_, ranges)
+    # assert solution == 167409079868000, f'Wrong solution: {solution}'
+    print(f'Part 2: {solution}')
 
 
 if __name__ == "__main__":
