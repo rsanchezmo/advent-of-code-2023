@@ -1,7 +1,7 @@
 # Advent of Code 2023
 This repo contains my solutions to [Advent of Code 2023](https://adventofcode.com/) in Python.  
 
-## Days completed [36/50 🌟]
+## Days completed [38/50 🌟]
 - Day 1: ```december_1.py```  ✔️
 - Day 2: ```december_2.py```  ✔️
 - Day 3: ```december_3.py```  ✔️
@@ -26,7 +26,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 18: ```december_18.py``` ✔️
 - Day 19: ```december_19.py``` ✔️
     - This day may help to solve day 5 part 2, binary tree search
-- Day 20: ```december_20.py```
+- Day 20: ```december_20.py``` ✔️
 - Day 21: ```december_21.py```
 - Day 22: ```december_22.py```
 - Day 23: ```december_23.py```
