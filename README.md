@@ -1,5 +1,8 @@
 # Advent of Code 2023
-This repo contains my solutions to [Advent of Code 2023](https://adventofcode.com/) in Python.  
+This repo contains my solutions to [Advent of Code 2023](https://adventofcode.com/) in Python. 
+
+> [!INFO]
+> The challenge consists on solving a coding exercise each day from December 1st to December 25th. The exercises are divided in two parts, the first one is usually easier than the second one. Each correct solution gives you a star, so you can get up to 50 stars. Some exercises are difficult and require some time to think a smart solution to solve them efficiently and not by brute force.
 
 ## Days completed [38/50 🌟]
 - Day 1: ```december_1.py```  ✔️
@@ -42,7 +45,8 @@ python3 december_1/december_1.py
 ```
 
 ## Future work
-Complete the days I haven't done yet and improve the days that are inneficient.
+- Complete the days I haven't done yet and improve the days that are inneficient.
+- Refactor each folder and create a README.md for each day with the problem description.
 
 ## Contributors
 Rodrigo Sánchez Molina
