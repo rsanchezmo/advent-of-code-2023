@@ -32,7 +32,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 20: ```december_20.py``` ✔️
 - Day 21: ```december_21.py```
     - Part 1: ✔️
-    - Part 2: ❌
+    - Part 2: ❌ I have a valid solution but it is extremely slow, only tested on test.txt. Must do some refactoring to improve performance. 500 cycles 60s using lru_cache. 
 - Day 22: ```december_22.py```
 - Day 23: ```december_23.py```
 - Day 24: ```december_24.py```
