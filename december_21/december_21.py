@@ -2,10 +2,10 @@ from pprint import pprint
 import time
 from functools import lru_cache
 from typing import Tuple
-
+import copy
 
 def main():
-    with open("./december_21/test.txt") as f:
+    with open("./december_21/input.txt") as f:
         lines = f.readlines()
 
     map_ = []
@@ -48,10 +48,6 @@ def main():
     # Part 2
     # i think i can solve with only 
     # 1 map, and a counter for each position, same computing, but with a counter on each position
-    
-    current_branches = set()
-    current_branches.add((*start, 0, 0))
-
 
     @lru_cache(maxsize=None)
     def step_map(branch: Tuple[int, int]):
@@ -91,23 +87,61 @@ def main():
             new_branches.append((new_x, new_y, *new_map_id))
 
         return new_branches
+    
+    # PART 2 SOLUTION BY USING DAY 9 AS SEEN IN REDDIT
+    def find_next_value(sequence):
+        differences = []
+        for i in range(1, len(sequence)):
+            differences.append(sequence[i] - sequence[i - 1])
 
-    init_time = time.time()
-    for _ in range(500):
-        new_branches = set()
-        for branch in current_branches:
-            point = branch[0:2]
-            new_branches_list = step_map(point)
-            for new_branch in new_branches_list:
-                x, y, new_x, new_y = new_branch
-                new_x += branch[2]
-                new_y += branch[3]
-                new_branches.add((x, y, new_x, new_y))
+        if all(difference == 0 for difference in differences):
+            return sequence[-1] + differences[-1]
+        
+        return find_next_value(differences) + sequence[-1]
+    
+    @lru_cache(maxsize=None)
+    def get_new_map_id(map_id_prev: Tuple[int, int], map_id: Tuple[int, int]):
+        new_x = map_id_prev[0] + map_id[0]
+        new_y = map_id_prev[1] + map_id[1]
+        return new_x, new_y
+    
+    def get_solution_part_2(n_cycles):
+        """ this is a brute force solution, but it works """
+        current_branches = set()
+        current_branches.add((*start, 0, 0))
+        current_branches_dict = {start: {(0, 0)}}
+        for _ in range(n_cycles):
+            new_branches = {}
+            for branch, branch_set in current_branches_dict.items():
+                for new_branch in step_map(branch):
+                    x, y, map_id_new_x, map_id_new_y = new_branch
+                    for map_id in branch_set:
+                        map_id_new = get_new_map_id(map_id, (map_id_new_x, map_id_new_y))
+                        if (x, y) not in new_branches:
+                            new_branches[(x, y)] = set()
+                        new_branches[(x, y)].add(map_id_new)         
+            current_branches_dict = new_branches  
+        return sum([len(branch_set) for branch_set in current_branches_dict.values()])
+    
+    # cycles 26501365 = 202300 * 131 + 65
+    y = []
+    x = []
+    next_value = 0
+    window_size = 4
+    import numpy as np
 
-        current_branches = new_branches  
+    for i in range(window_size):
+        y.append(get_solution_part_2(65 + 131*i))
+        x.append(65 + 131*i)
 
-    print(f'Time: {time.time() - init_time}s')
-    print(f'Part 2_: {len(new_branches)}')
+    y = np.array(y)
+    x = np.array(x)
+    p = np.polyfit(x, y, 2)
+    p = np.poly1d(p)
+    next_value = round(p(26501365))
+
+    print(f'Part 2: {next_value}')
+
 
 if __name__ == "__main__":
     main()
