@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Tuple
 from collections import deque
+import time 
+
 
 @dataclass
 class Node:
@@ -12,7 +14,7 @@ class Node:
         return hash((*self.pose, self.cost))
 
 def main():
-    with open('./december_23/test.txt') as f:
+    with open('./december_23/input.txt') as f:
         lines = f.readlines()
 
     map_ = []
@@ -40,7 +42,7 @@ def main():
         for move in MOVES:
             next_pose = (current_node.pose[0] + move[0], current_node.pose[1] + move[1])
 
-            if 0 < next_pose[0] < len(map_[0]) and 0 < next_pose[1] < len(map_):
+            if next_pose[0] < 0 or next_pose[0] >= len(map_[0]) or next_pose[1] < 0 or next_pose[1] >= len(map_):
                 continue
 
             if next_pose != current_node.parent_pose and map_[next_pose[1]][next_pose[0]] != '#':
@@ -64,13 +66,16 @@ def main():
 
         return next_poses
 
+    init_time = time.time()
     while open_nodes:
         current = open_nodes.popleft()
         closed_nodes.add(current)
         get_next_nodes(current, map_, closed_nodes, open_nodes)
 
 
+
     max_cost = max([node.cost for node in closed_nodes])
+    print(f'Time: {time.time() - init_time}s')
     print(f'Part 1: {max_cost}')
 
 if __name__ == '__main__':
