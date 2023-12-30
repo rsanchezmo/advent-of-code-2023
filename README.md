@@ -41,7 +41,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 Just call the python file from the day folder you want to run. For example:
 
 ```python
-python3 december_1/december_1.py
+python3 ./december_1/december_1.py
 ```
 
 ## Future work
