@@ -82,7 +82,11 @@ def main():
     print(f'Part 1: {count_collisions}')
 
     # Part 2
-    
+    # every intersection between the rock and the hailstones share the same cross product as the delta of positions gives a vector that is the same as the delta of velocities
+    # just have 6 * 3 equations with 6 * 3 unknowns and solve it
+    # (p0 - p1) x (v0 - v1) = 0
+    # (p0 - p2) x (v0 - v2) = 0
+    # (p0 - p3) x (v0 - v3) = 0
 
 if __name__ == '__main__':
     main()  
