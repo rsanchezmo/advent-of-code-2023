@@ -44,10 +44,6 @@ Just call the python file from the day folder you want to run. For example:
 python3 ./december_1/december_1.py
 ```
 
-## Future work
-- Complete the days I haven't done yet and improve the days that are inneficient.
-- Refactor each folder and create a README.md for each day with the problem description.
-
 ## Contributors
 Rodrigo Sánchez Molina
 - Email: rsanchezm98@gmail.com
