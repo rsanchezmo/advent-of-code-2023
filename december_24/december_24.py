@@ -1,7 +1,8 @@
 from functools import lru_cache
-import time
 from dataclasses import dataclass
 from typing import Tuple
+import sympy as sp
+import time
 
 
 @dataclass
@@ -48,7 +49,7 @@ def main():
         line_split = line.strip().split(' @ ')
         x, y, z = map(int, line_split[0].split(', '))
         vx, vy, vz = map(int, line_split[1].split(', '))
-        hailstones.append(Hailstone(initial_pose=(x, y), velocity=(vx, vy)))
+        hailstones.append(Hailstone(initial_pose=(x, y, z), velocity=(vx, vy, vz)))
 
 
     @lru_cache(maxsize=None)
@@ -82,11 +83,20 @@ def main():
     print(f'Part 1: {count_collisions}')
 
     # Part 2
-    # every intersection between the rock and the hailstones share the same cross product as the delta of positions gives a vector that is the same as the delta of velocities
-    # just have 6 * 3 equations with 6 * 3 unknowns and solve it
-    # (p0 - p1) x (v0 - v1) = 0
-    # (p0 - p2) x (v0 - v2) = 0
-    # (p0 - p3) x (v0 - v3) = 0
+    # Can use the first 3 hailstones to find the 9 variables of the system (x,y,z,vx,vy,vz,t0,t1,t2) of equations as each hailstone gives 3 equations
+    unknowns = sp.symbols('x y z dx dy dz t1 t2 t3')
+    x, y, z, dx, dy, dz, t1, t2, t3 = unknowns
+
+    equations = []
+    for i, hailstone in enumerate(hailstones[:3]):
+        equations.append(sp.Eq(x + unknowns[-i-1]*dx, hailstone.initial_pose[0] + unknowns[-i-1]*hailstone.velocity[0]))
+        equations.append(sp.Eq(y + unknowns[-i-1]*dy, hailstone.initial_pose[1] + unknowns[-i-1]*hailstone.velocity[1]))
+        equations.append(sp.Eq(z + unknowns[-i-1]*dz, hailstone.initial_pose[2] + unknowns[-i-1]*hailstone.velocity[2]))
+
+    init_time = time.time()
+    solution = sp.solve(equations, unknowns).pop()
+    print(f"Time: {time.time() - init_time}s")    
+    print(f'Part 2: {sum(solution[:3])}')
 
 if __name__ == '__main__':
     main()  
