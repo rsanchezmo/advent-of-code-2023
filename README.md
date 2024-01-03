@@ -37,6 +37,8 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
     - Part 1: ✔️
     - Part 2: ❌
 - Day 25: ```december_25.py```
+    - Part 1: ✔️
+    - Part 2: ❌ Require to complete entirely the days before
 
 
 ## How to run
