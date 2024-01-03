@@ -4,7 +4,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 > [!NOTE]
 > The challenge consists on solving a coding exercise each day from December 1st to December 25th. The exercises are divided in two parts, the first one is usually easier than the second one. Each correct solution gives you a star, so you can get up to 50 stars. Some exercises are difficult and require some time to think a smart solution to solve them efficiently and not by brute force.
 
-## Days completed [47/50 🌟]
+## Days completed [48/50 🌟]
 - Day 1: ```december_1.py```  ✔️
 - Day 2: ```december_2.py```  ✔️
 - Day 3: ```december_3.py```  ✔️
@@ -19,9 +19,7 @@ This repo contains my solutions to [Advent of Code 2023](https://adventofcode.co
 - Day 10: ```december_10.py``` ✔️
 - Day 11: ```december_11.py``` ✔️
 - Day 12: ```december_12.py``` ✔️ 
-- Day 13: ```december_13.py``` 
-    - Part 1: ✔️
-    - Part 2: ❌
+- Day 13: ```december_13.py``` ✔️
 - Day 14: ```december_14.py``` ✔️
 - Day 15: ```december_15.py``` ✔️
 - Day 16: ```december_16.py``` ✔️
