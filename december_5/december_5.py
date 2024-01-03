@@ -71,18 +71,56 @@ def main():
 
     """ PART 2 """
     # this version is really inneficient
-    locations = []
-    counter = 0
-    while counter < len(maps[0]):
-        print(f"{counter}/{len(maps[0])}")
-        source = maps[0][counter]
-        range_ = maps[0][counter + 1]
-        for seed in range(source, source+range_):
-            location = find_location_recursive(seed, 1)
-            locations.append(location)
-        counter += 2
-    
-    print(f"The lowest location is: {min(locations)}")
+    use_inneficient_version = False
+    if use_inneficient_version:
+        locations = []
+        counter = 0
+        while counter < len(maps[0]):
+            print(f"{counter}/{len(maps[0])}")
+            source = maps[0][counter]
+            range_ = maps[0][counter + 1]
+            for seed in range(source, source+range_):
+                location = find_location_recursive(seed, 1)
+                locations.append(location)
+            counter += 2
+        
+        print(f"The lowest location is: {min(locations)}")
+    else:
+        locations = []
+        for i in range(0, len(maps[0]), 2):
+            ranges = [(maps[0][i], maps[0][i] + maps[0][i+1])]
+            results = []
+            for i, key in enumerate(maps.keys()):
+                if i == 0:
+                    continue
+                while ranges:
+                    start_range, end_range = ranges.pop()
+                    for destination, start_map, range_ in maps[key]:
+                        end_map = start_map + range_
+                        offset = destination - start_map
+                        if end_map <= start_range or end_range <= start_map: # if the ranges are not overlapping
+                            continue
+
+                        if start_range < start_map:  # if should split the range [create a new one and add the old one to the results]
+                            ranges.append((start_range, start_map))
+                            start_range = start_map
+
+                        if end_map < end_range:  # if should split the range [create a new one and add the old one to the results]
+                            ranges.append((end_map, end_range))
+                            end_range = end_map
+
+                        results.append((start_range + offset, end_range + offset))
+                        break
+                    else:
+                        results.append((start_range, end_range))
+
+                ranges = results.copy()
+                results = []
+            locations += ranges
+        print(f"[Part 2] The lowest location is: {min(loc[0] for loc in locations)}")
+
+                        
+            
 
 
 
